@@ -1,11 +1,17 @@
 /**
  * AutoSafe AI - Sistema de Diagnóstico Vehicular
- * Script principal con lógica de diagnóstico y generación de PDF
+ * Script principal con lógica de diagnóstico, generación de PDF y Agente Conversacional
  */
 
 // ============================================
 // Configuración y Datos
 // ============================================
+
+// Configuración del Agente IA (n8n)
+// URL de producción (requiere workflow activo)
+const N8N_WEBHOOK_URL = 'http://localhost:5678/webhook-test/riesgo-mecanico';
+const AGENT_ENABLED = true; // Cambiar a false para modo demo sin n8n
+
 
 const vehicleBrands = {
     toyota: "Toyota",
@@ -38,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeSliders();
     initializeForm();
     initializePdfButton();
+    initializeChatWidget();
     setMaxYear();
 });
 
@@ -482,4 +489,240 @@ function generatePDF() {
         console.error("Error generando PDF:", error);
         alert("Error al generar el PDF. Intenta de nuevo.");
     });
+}
+
+// ============================================
+// Chat Widget - Agente Conversacional
+// ============================================
+
+function initializeChatWidget() {
+    const bubble = document.getElementById('chatBubble');
+    const window = document.getElementById('chatWindow');
+    const closeBtn = document.getElementById('chatClose');
+    const sendBtn = document.getElementById('chatSend');
+    const input = document.getElementById('chatInput');
+    const widget = document.getElementById('chatWidget');
+
+    // Toggle chat window
+    bubble.addEventListener('click', () => {
+        window.classList.toggle('hidden');
+        if (!window.classList.contains('hidden')) {
+            input.focus();
+        }
+    });
+
+    // Close button
+    closeBtn.addEventListener('click', () => {
+        window.classList.add('hidden');
+    });
+
+    // Send message
+    sendBtn.addEventListener('click', sendChatMessage);
+    input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendChatMessage();
+    });
+
+    // Make widget draggable
+    makeDraggable(widget);
+}
+
+function makeDraggable(element) {
+    let isDragging = false;
+    let startX, startY, initialX, initialY;
+
+    const header = element.querySelector('.chat-header');
+    if (!header) return;
+
+    header.addEventListener('mousedown', startDrag);
+    header.addEventListener('touchstart', startDrag, { passive: false });
+
+    function startDrag(e) {
+        if (e.target.closest('.chat-close')) return;
+
+        isDragging = true;
+        const rect = element.getBoundingClientRect();
+
+        if (e.type === 'touchstart') {
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+        } else {
+            startX = e.clientX;
+            startY = e.clientY;
+        }
+
+        initialX = rect.left;
+        initialY = rect.top;
+
+        element.style.position = 'fixed';
+        element.style.right = 'auto';
+        element.style.bottom = 'auto';
+        element.style.left = initialX + 'px';
+        element.style.top = initialY + 'px';
+
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('mouseup', stopDrag);
+        document.addEventListener('touchmove', drag, { passive: false });
+        document.addEventListener('touchend', stopDrag);
+    }
+
+    function drag(e) {
+        if (!isDragging) return;
+        e.preventDefault();
+
+        let clientX, clientY;
+        if (e.type === 'touchmove') {
+            clientX = e.touches[0].clientX;
+            clientY = e.touches[0].clientY;
+        } else {
+            clientX = e.clientX;
+            clientY = e.clientY;
+        }
+
+        const deltaX = clientX - startX;
+        const deltaY = clientY - startY;
+
+        element.style.left = (initialX + deltaX) + 'px';
+        element.style.top = (initialY + deltaY) + 'px';
+    }
+
+    function stopDrag() {
+        isDragging = false;
+        document.removeEventListener('mousemove', drag);
+        document.removeEventListener('mouseup', stopDrag);
+        document.removeEventListener('touchmove', drag);
+        document.removeEventListener('touchend', stopDrag);
+    }
+}
+
+async function sendChatMessage() {
+    const input = document.getElementById('chatInput');
+    const messagesContainer = document.getElementById('chatMessages');
+    const message = input.value.trim();
+
+    if (!message) return;
+
+    // Add user message to UI
+    addMessageToChat('user', message);
+    input.value = '';
+    input.disabled = true;
+    document.getElementById('chatSend').disabled = true;
+
+    // Show typing indicator
+    const typingId = showTypingIndicator();
+
+    try {
+        // Send to n8n agent
+        const response = await sendToAgent(message);
+
+        // Remove typing indicator
+        removeTypingIndicator(typingId);
+
+        // Add agent response
+        if (response && response.respuesta) {
+            addMessageToChat('agent', response.respuesta);
+
+            // Update visual indicator if risk level received
+            if (response.riesgo) {
+                updateChatStatusIndicator(response.riesgo);
+            }
+        } else {
+            addMessageToChat('agent', 'Recibí tu consulta. ¿Hay algo más en lo que pueda ayudarte?');
+        }
+    } catch (error) {
+        removeTypingIndicator(typingId);
+        addMessageToChat('agent', 'Error de conexión con el agente. Verifica que n8n esté activo en localhost:5678');
+        console.error('Chat error:', error);
+    }
+
+    input.disabled = false;
+    document.getElementById('chatSend').disabled = false;
+    input.focus();
+}
+
+function addMessageToChat(sender, text) {
+    const container = document.getElementById('chatMessages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `chat-message ${sender}`;
+
+    const icon = sender === 'user' ? 'fa-user' : 'fa-robot';
+
+    messageDiv.innerHTML = `
+        <div class="message-avatar"><i class="fas ${icon}"></i></div>
+        <div class="message-content"><p>${text}</p></div>
+    `;
+
+    container.appendChild(messageDiv);
+    container.scrollTop = container.scrollHeight;
+}
+
+function showTypingIndicator() {
+    const container = document.getElementById('chatMessages');
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'chat-message agent';
+    typingDiv.id = 'typing-' + Date.now();
+
+    typingDiv.innerHTML = `
+        <div class="message-avatar"><i class="fas fa-robot"></i></div>
+        <div class="message-content">
+            <div class="typing-indicator">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    `;
+
+    container.appendChild(typingDiv);
+    container.scrollTop = container.scrollHeight;
+    return typingDiv.id;
+}
+
+function removeTypingIndicator(id) {
+    const element = document.getElementById(id);
+    if (element) element.remove();
+}
+
+function updateChatStatusIndicator(riesgo) {
+    const statusElement = document.getElementById('agentStatus');
+    const colors = {
+        'Alto': '#ef4444',
+        'Medio': '#f59e0b',
+        'Bajo': '#10b981'
+    };
+
+    if (colors[riesgo]) {
+        statusElement.querySelector('.status-dot').style.background = colors[riesgo];
+    }
+}
+
+async function sendToAgent(message) {
+    // If agent is disabled, return demo response
+    if (!AGENT_ENABLED) {
+        await new Promise(r => setTimeout(r, 1500));
+        return {
+            respuesta: 'Modo demo activo. Para conectar con el agente real, activa n8n y configura el webhook.',
+            riesgo: 'Bajo'
+        };
+    }
+
+    // Prepare context with current diagnosis if available
+    const payload = {
+        mensaje: message,
+        contexto: currentDiagnosis ? {
+            vehiculo: `${currentDiagnosis.brandName} ${currentDiagnosis.model} ${currentDiagnosis.year}`,
+            kilometraje: currentDiagnosis.mileage,
+            estadoActual: currentDiagnosis.status,
+            nivelRiesgo: currentDiagnosis.riskLevel
+        } : null
+    };
+
+    const response = await fetch(N8N_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+        throw new Error('Error en la respuesta del servidor');
+    }
+
+    return await response.json();
 }

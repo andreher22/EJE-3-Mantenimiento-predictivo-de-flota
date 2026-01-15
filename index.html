@@ -268,6 +268,53 @@
         </div>
     </section>
 
+    <!-- AI Chat Bubble Widget -->
+    <div class="chat-widget" id="chatWidget">
+        <!-- Floating Bubble Button -->
+        <button class="chat-bubble" id="chatBubble" title="Hablar con el Agente IA">
+            <i class="fas fa-robot"></i>
+            <span class="bubble-pulse"></span>
+        </button>
+
+        <!-- Chat Window -->
+        <div class="chat-window hidden" id="chatWindow">
+            <div class="chat-header" id="chatHeader">
+                <div class="chat-header-info">
+                    <div class="chat-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="chat-header-text">
+                        <span class="chat-title">Agente AutoSafe</span>
+                        <span class="chat-status" id="agentStatus">
+                            <span class="status-dot"></span> Conectado
+                        </span>
+                    </div>
+                </div>
+                <button class="chat-close" id="chatClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <div class="chat-message agent">
+                    <div class="message-avatar"><i class="fas fa-robot"></i></div>
+                    <div class="message-content">
+                        <p>¡Hola! Soy el Agente de IA de AutoSafe. Puedo ayudarte a analizar el riesgo mecánico de tu
+                            vehículo.</p>
+                        <p>Pregúntame sobre diagnósticos, mantenimiento preventivo o cualquier duda técnica.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-input-container">
+                <input type="text" id="chatInput" placeholder="Escribe tu consulta..." autocomplete="off">
+                <button class="chat-send" id="chatSend">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="main-footer">
         <div class="container">
@@ -275,6 +322,7 @@
                 <i class="fas fa-car-side"></i> AutoSafe AI
             </div>
             <p>Sistema de diagnóstico de mantenimiento vehicular con inteligencia artificial</p>
+            <p class="powered-by">Agente IA orquestado con n8n + Google Gemini</p>
             <div class="copyright">
                 &copy; 2026 AutoSafe AI. Todos los derechos reservados.
             </div>
