@@ -107,6 +107,7 @@ n8n
 
 - [Agente de IA](docs/agente_ia.md)
 - [Arquitectura n8n](docs/arquitectura_n8n.md)
+- [Documento Ejecutivo](docs/documento_ejecutivo.md)
 
 ---
 
