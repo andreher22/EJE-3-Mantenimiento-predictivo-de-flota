@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoSafe AI - Diagnóstico de Mantenimiento Vehicular</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- PDF Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="main-header">
+        <div class="container">
+            <a href="#" class="logo">
+                <i class="fas fa-car-side"></i>
+                <span>AutoSafe AI</span>
+            </a>
+            <div class="tagline">Diagnóstico Inteligente de Mantenimiento Vehicular</div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Diagnóstico de Mantenimiento con <span class="gradient-text">Inteligencia Artificial</span></h1>
+                <p class="hero-description">Nuestro sistema analiza el estado de tu vehículo y genera un informe
+                    completo con semáforo de seguridad para determinar si necesita mantenimiento urgente.</p>
+                <a href="#diagnostico" class="btn btn-primary btn-lg">
+                    <i class="fas fa-stethoscope"></i> Iniciar Diagnóstico
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Diagnostic Form Section -->
+    <section class="diagnostic-section" id="diagnostico">
+        <div class="container">
+            <h2 class="section-title">Diagnóstico de Mantenimiento</h2>
+
+            <div class="diagnostic-grid">
+                <!-- Left: Form -->
+                <div class="form-panel">
+                    <div class="panel-header">
+                        <i class="fas fa-clipboard-list"></i>
+                        <h3>Datos del Vehículo</h3>
+                    </div>
+
+                    <form id="diagnostic-form">
+                        <!-- Vehicle Info -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="vehicle-brand">
+                                    <i class="fas fa-car"></i> Marca
+                                </label>
+                                <select id="vehicle-brand" required>
+                                    <option value="">Selecciona una marca</option>
+                                    <option value="toyota">Toyota</option>
+                                    <option value="honda">Honda</option>
+                                    <option value="ford">Ford</option>
+                                    <option value="chevrolet">Chevrolet</option>
+                                    <option value="nissan">Nissan</option>
+                                    <option value="volkswagen">Volkswagen</option>
+                                    <option value="bmw">BMW</option>
+                                    <option value="mercedes">Mercedes-Benz</option>
+                                    <option value="audi">Audi</option>
+                                    <option value="hyundai">Hyundai</option>
+                                    <option value="otra">Otra</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="vehicle-model">
+                                    <i class="fas fa-tag"></i> Modelo
+                                </label>
+                                <input type="text" id="vehicle-model" placeholder="Ej: Corolla, Civic" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="vehicle-year">
+                                    <i class="fas fa-calendar"></i> Año
+                                </label>
+                                <input type="number" id="vehicle-year" min="1990" max="2026" value="2022">
+                            </div>
+                            <div class="form-group">
+                                <label for="vehicle-mileage">
+                                    <i class="fas fa-tachometer-alt"></i> Kilometraje
+                                </label>
+                                <input type="number" id="vehicle-mileage" value="45000" placeholder="Km">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="owner-name">
+                                    <i class="fas fa-user"></i> Propietario
+                                </label>
+                                <input type="text" id="owner-name" placeholder="Nombre completo" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="vehicle-plate">
+                                    <i class="fas fa-id-card"></i> Placas
+                                </label>
+                                <input type="text" id="vehicle-plate" placeholder="ABC-123" required>
+                            </div>
+                        </div>
+
+                        <div class="form-divider">
+                            <span>Estado Actual</span>
+                        </div>
+
+                        <!-- Sliders -->
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <label><i class="fas fa-wrench"></i> Último mantenimiento</label>
+                                <span class="slider-value" id="maintenance-value">3 meses</span>
+                            </div>
+                            <input type="range" id="maintenance-slider" min="0" max="24" value="3"
+                                class="custom-slider">
+                            <div class="slider-labels">
+                                <span>Reciente</span>
+                                <span>Antiguo</span>
+                            </div>
+                        </div>
+
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <label><i class="fas fa-cogs"></i> Estado del motor</label>
+                                <span class="slider-value" id="engine-value">Óptimo</span>
+                            </div>
+                            <input type="range" id="engine-slider" min="1" max="10" value="2" class="custom-slider">
+                            <div class="slider-labels">
+                                <span>Óptimo</span>
+                                <span>Crítico</span>
+                            </div>
+                        </div>
+
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <label><i class="fas fa-compact-disc"></i> Estado de frenos</label>
+                                <span class="slider-value" id="brakes-value">Bueno</span>
+                            </div>
+                            <input type="range" id="brakes-slider" min="1" max="10" value="3" class="custom-slider">
+                            <div class="slider-labels">
+                                <span>Nuevo</span>
+                                <span>Desgastado</span>
+                            </div>
+                        </div>
+
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <label><i class="fas fa-circle"></i> Estado de neumáticos</label>
+                                <span class="slider-value" id="tires-value">Bueno</span>
+                            </div>
+                            <input type="range" id="tires-slider" min="1" max="10" value="4" class="custom-slider">
+                            <div class="slider-labels">
+                                <span>Nuevo</span>
+                                <span>Desgastado</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="additional-notes">
+                                <i class="fas fa-sticky-note"></i> Notas adicionales
+                            </label>
+                            <textarea id="additional-notes" rows="3"
+                                placeholder="Describe cualquier problema u observación..."></textarea>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-success btn-block" id="diagnose-btn">
+                                <i class="fas fa-search-plus"></i> Realizar Diagnóstico
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Right: Results -->
+                <div class="results-panel">
+                    <div class="result-card" id="result-card">
+                        <div class="panel-header">
+                            <i class="fas fa-chart-pie"></i>
+                            <h3>Resultado del Diagnóstico</h3>
+                        </div>
+
+                        <p class="placeholder-text" id="placeholder-text">
+                            <i class="fas fa-info-circle"></i>
+                            Completa el formulario y haz clic en "Realizar Diagnóstico" para ver el análisis.
+                        </p>
+
+                        <!-- Traffic Light -->
+                        <div class="traffic-light-wrapper hidden" id="traffic-light-wrapper">
+                            <div class="traffic-light-housing">
+                                <div class="traffic-light-body">
+                                    <div class="light red" id="red-light"></div>
+                                    <div class="light yellow" id="yellow-light"></div>
+                                    <div class="light green" id="green-light"></div>
+                                </div>
+                            </div>
+                            <div class="status-badge" id="status-badge">
+                                <span id="status-text">SIN DIAGNÓSTICO</span>
+                            </div>
+                        </div>
+
+                        <!-- Vehicle Summary -->
+                        <div class="vehicle-summary hidden" id="vehicle-summary">
+                            <div class="summary-item">
+                                <span class="summary-label">Vehículo</span>
+                                <span class="summary-value" id="summary-vehicle">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Propietario</span>
+                                <span class="summary-value" id="summary-owner">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Kilometraje</span>
+                                <span class="summary-value" id="summary-mileage">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Antigüedad</span>
+                                <span class="summary-value" id="summary-age">-</span>
+                            </div>
+                            <div class="summary-item highlight">
+                                <span class="summary-label">Nivel de Riesgo</span>
+                                <span class="summary-value" id="summary-risk">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recommendations -->
+                    <div class="recommendations-card hidden" id="recommendations-card">
+                        <div class="panel-header">
+                            <i class="fas fa-lightbulb"></i>
+                            <h3>Recomendaciones</h3>
+                        </div>
+                        <div id="recommendations-content"></div>
+                    </div>
+
+                    <!-- PDF Download -->
+                    <div class="pdf-card hidden" id="pdf-card">
+                        <div class="pdf-icon">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <h4>Generar Informe PDF</h4>
+                        <p>Descarga un informe profesional con el diagnóstico completo.</p>
+                        <button class="btn btn-warning" id="download-pdf-btn">
+                            <i class="fas fa-download"></i> Descargar PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-logo">
+                <i class="fas fa-car-side"></i> AutoSafe AI
+            </div>
+            <p>Sistema de diagnóstico de mantenimiento vehicular con inteligencia artificial</p>
+            <div class="copyright">
+                &copy; 2026 AutoSafe AI. Todos los derechos reservados.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom Scripts -->
+    <script src="script.js"></script>
+</body>
+
+</html>
