@@ -1,3 +1,96 @@
+
+
+graph TD
+    %% --- NIVEL ESTRATÉGICO ---
+    subgraph Estrategia ["🧠 LIDERAZGO Y ESTRATEGIA GLOBAL"]
+        AndreaPM[/"👩‍💼 **Andrea Robles Hernández**<br/>Product Manager & Arquitecta de Software"<br/>*(Visión, Priorización, Diseño de Arquitectura)*\]
+        style AndreaPM fill:#fff3e0,stroke:#ffb74d,stroke-width:3px
+    end
+
+    %% Conectores a los pilares operativos
+    AndreaPM -.-> DesignPillar
+    AndreaPM ===> DevPillar
+    AndreaPM -.-> QAPillar
+
+    %% --- NIVEL OPERATIVO (PILARES) ---
+    subgraph Operaciones ["⚙️ ÁREAS DE EJECUCIÓN OPERATIVA"]
+        
+        %% PILAR 1: DISEÑO
+        subgraph DesignPillar ["🎨 DISEÑO DE EXPERIENCIA (UX/UI)"]
+            Itzel["👤 **Itzel Galván Contreras**<br/>Diseñadora UX/UI<br/>*(Responsable de Wireframes, Estilos visuales y Usabilidad)*"]
+            style Itzel fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
+        end
+
+        %% PILAR 2: DESARROLLO
+        subgraph DevPillar ["💻 DESARROLLO E IMPLEMENTACIÓN"]
+            AndreaDev["👩‍💻 **Andrea Robles H.**<br/>Desarrolladora Backend / IA<br/>*(Liderazgo Técnico, Lógica Django, Módulo IA)*"]
+            style AndreaDev fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+            
+            JuanDev["👨‍💻 **Juan Pablo González A.**<br/>Desarrollador Full Stack<br/>*(Frontend principal, Integración y Servidor)*"]
+            style JuanDev fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+            
+            %% Relación de colaboración en desarrollo
+            AndreaDev <-->|Colaboración Técnica| JuanDev
+        end
+
+        %% PILAR 3: CALIDAD Y DOCS
+        subgraph QAPillar ["📝 CALIDAD, PRUEBAS Y DOCUMENTACIÓN"]
+            Jeronimo["👨‍🔧 **Jerónimo Israel Macías Q.**<br/>Tester & Documentador<br/>*(Pruebas de usabilidad, Reporte de errores, Manuales de usuario)*"]
+            style Jeronimo fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+
+            JuanDoc["👨‍💻 **Juan Pablo González A.**<br/>Apoyo Técnico<br/>*(Documentación técnica y funcional)*"]
+            style JuanDoc fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+
+            AndreaQA["👩‍💼 **Andrea Robles H.**<br/>Supervisión QA<br/>*(Validación final y cumplimiento de requisitos)*"]
+            style AndreaQA fill:#f3e5f5,stroke:#7b1fa2,stroke-dasharray: 5 5
+            
+            %% Flujo de trabajo en QA
+            Jeronimo -->|Reportes y Manuales| AndreaQA
+            JuanDoc -->|Docs Técnicos| AndreaQA
+        end
+    end
+
+    %% Estilos de enlace
+    linkStyle 1 stroke-width:4px,fill:none,stroke:#2e7d32;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # 🚗 AutoSafe AI - Sistema de Diagnóstico Vehicular con IA
 
 Sistema de diagnóstico de mantenimiento vehicular con **Agente de IA Conversacional** orquestado mediante n8n e integrado con Google Gemini.
